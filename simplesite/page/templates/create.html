@@ -1,0 +1,8 @@
+{% extends 'layout.html' %}
+{% block CONTENT %}
+<form method="POST" action="{{url_for('create')}}">
+	Path: <input type="text" name="path" />
+	Subject: <input type="text" name="subject" />
+	<input type="submit" />
+</form>
+{% endblock %}

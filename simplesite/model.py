@@ -35,4 +35,6 @@ class ListContent(Content):
 
     group = ManyToOne('ContentGroup')
 
+class Comment(ListContent):
+    using_options(inheritance='multi')
 

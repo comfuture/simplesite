@@ -1,0 +1,7 @@
+{% extends 'layout.html' %}
+{% block CONTENT %}
+<form method="POST" action="{{url_for('modify', path=page.path)}}">
+	Subject: {{page.subject}}
+</form>
+{{page.content}}
+{% endblock %}
