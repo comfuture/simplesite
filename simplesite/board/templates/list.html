@@ -3,7 +3,7 @@
 <h2>{{board.name}}</h2>
 <ul>
 {% for article in board.contents[:10] %}
-	<li><a href="{{'%s/%s' % (url_for('board.list', name=board.name), article.id)}}">{{article.subject}}</li>
+	<li><a href="{{url_for('view', name=board.name, id=article.id)}}">{{article.subject}}</li>
 {% endfor %}
 </ul>
 {% endblock %}

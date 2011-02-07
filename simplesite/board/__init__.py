@@ -1,4 +1,5 @@
-from flask import Module, render_template
+import re
+from flask import Module, render_template, request, redirect, url_for
 from ..model import *
 from model import *
 
@@ -15,19 +16,34 @@ def get_article(name, id):
 
 @module.route('/<path:name>/*')
 def list(name):
+    exclude_ptn = re.compile(r'/\*$')
+    name = re.sub(exclude_ptn, u'', name)
     board = get_board(name)
     if board is None:
         return 'board not exists', 404
     context = {'board': board}
     return render_template('board/list.html', **context)
 
-@module.route('/<path:name>/', methods=['POST'])
-def post(name):
-    return ''
+def init_plugin():
+    def embed_board(p):
+        p.content = p.content.replace('t', 'f')
 
-@module.route('/<path:name>/+')
-def form(name):
-    return ''
+    add_filter(embed_board)
+
+@module.route('/<path:name>/+', methods=['GET', 'POST'])
+def create(name):
+    board = get_board(name)
+    if not board:
+        return "board not exists", 404
+    if request.method == 'GET':
+        return render_template('board/create.html', name=name)
+    elif request.method == 'POST':
+        article = BoardArticle(group=board,
+            subject=request.form.get('subject', ''),
+            content=request.form.get('content', ''),
+            author=request.form.get('author', ''))
+        session.commit()
+        return redirect(url_for('view', name=name, id=article.id))
 
 @module.route('/<path:name>/@<int:id>')
 def view(name, id):
